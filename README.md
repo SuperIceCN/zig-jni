@@ -44,7 +44,11 @@ The important features of Zig, especially for JNI development, are:
 }
 ```
 
-**Second**, Run zig build in your project, and the compiler will instruct you to add a .hash = "..." field next to .url.
+**Second**, Run zig build in your project, and the compiler will instruct you to add a .hash = "..." field next to .url. The instruction will look like this:
+
+```
+note: expected .hash = "1220a61eebdcda95a9e51e2a4f237522d407a0404aea4225fc27b2bb1d32f27edf9c",
+```
 
 **Third**, use the dependency in your `build.zig` :
 
@@ -73,7 +77,7 @@ public class SimpleAdd {
         System.load("/path/to/shared_librarys.so");
     }
 
-    private static native void add(int a, int b);
+    private static native int add(int a, int b);
 
     public static void main(String[] args) {
         var a = Integer.parseInt(args[0]);
