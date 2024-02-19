@@ -684,7 +684,7 @@ pub const JNIEnv = struct {
 
     /// Get the address of a direct java.nio.ByteBuffer, use @intFromPtr to convert the return value to a pointer
     pub inline fn getDirectBufferAddress(self: *const JNIEnv, buf: jobject) usize {
-        return self._cJNIEnv.*.*.GetDirectBufferAddress.?(self._cJNIEnv, buf);
+        return @intFromPtr(self._cJNIEnv.*.*.GetDirectBufferAddress.?(self._cJNIEnv, buf));
     }
 
     /// Get the capacity of a direct java.nio.ByteBuffer
