@@ -107,7 +107,7 @@ pub fn exportJNI(comptime class_name: []const u8, comptime func_struct: type) vo
         }
         const tmp_name: []const u8 = comptime ("Java." ++ class_name ++ "." ++ decl.name);
         var export_name: [tmp_name.len]u8 = undefined;
-        @setEvalBranchQuota(10000);
+        @setEvalBranchQuota(30000);
         _ = comptime std.mem.replace(u8, tmp_name, ".", "_", export_name[0..]);
         @export(func, .{
             .name = export_name[0..],
