@@ -596,7 +596,7 @@ pub const JNIEnv = struct {
         };
     }
 
-    pub inline fn getArrayRegion(self: *const JNIEnv, ElementType: type, array: jarray, start: jsize, len: jsize, buf: [*]ElementType) void {
+    pub inline fn getArrayRegion(self: *const JNIEnv, comptime ElementType: type, array: jarray, start: jsize, len: jsize, buf: [*]ElementType) void {
         return switch (ElementType) {
             jboolean => self._cJNIEnv.*.*.GetBooleanArrayRegion.?(self._cJNIEnv, array, start, len, buf),
             jbyte => self._cJNIEnv.*.*.GetByteArrayRegion.?(self._cJNIEnv, array, start, len, buf),
@@ -611,7 +611,7 @@ pub const JNIEnv = struct {
         };
     }
 
-    pub inline fn setArrayRegion(self: *const JNIEnv, ElementType: type, array: jarray, start: jsize, len: jsize, buf: [*]const ElementType) void {
+    pub inline fn setArrayRegion(self: *const JNIEnv, comptime ElementType: type, array: jarray, start: jsize, len: jsize, buf: [*]const ElementType) void {
         return switch (ElementType) {
             jboolean => self._cJNIEnv.*.*.SetBooleanArrayRegion.?(self._cJNIEnv, array, start, len, buf),
             jbyte => self._cJNIEnv.*.*.SetByteArrayRegion.?(self._cJNIEnv, array, start, len, buf),
