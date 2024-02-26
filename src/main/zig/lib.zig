@@ -693,7 +693,7 @@ pub const JNIEnv = struct {
     }
 
     pub inline fn getObjectRefType(self: *const JNIEnv, obj: jobject) jobjectRefType {
-        return self._cJNIEnv.*.*.GetObjectRefType.?(self._cJNIEnv, obj);
+        return @enumFromInt(self._cJNIEnv.*.*.GetObjectRefType.?(self._cJNIEnv, obj));
     }
 
     pub inline fn getModule(self: *const JNIEnv, clazz: jclass) jobject {
