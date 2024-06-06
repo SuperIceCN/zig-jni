@@ -6,7 +6,10 @@ pub fn build(b: *std.Build) void {
         .owner = b,
         .sub_path = "src/main/zig/lib.zig",
     } } });
-    module.addIncludePath(.{ .path = "src/include/jni" });
+    module.addIncludePath(.{ .src_path = .{
+        .owner = b,
+        .sub_path = "src/include/jni",
+    } });
     module.link_libc = true;
     // build options
     const optimize = b.standardOptimizeOption(.{});
@@ -22,6 +25,9 @@ pub fn build(b: *std.Build) void {
         .optimize = optimize,
     });
     lib.linkLibC();
-    lib.addIncludePath(.{ .path = "src/include/jni" });
+    lib.addIncludePath(.{ .src_path = .{
+        .owner = b,
+        .sub_path = "src/include/jni",
+    } });
     b.installArtifact(lib);
 }
