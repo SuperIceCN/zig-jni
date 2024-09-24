@@ -175,6 +175,10 @@ pub fn toJValues(args: anytype) [valueLen(@TypeOf(args))]jvalue {
 pub const JavaVM = struct {
     _cJavaVM: ?*cjni.JavaVM = null,
 
+    pub inline fn warp(cJavaVM: ?*cjni.JavaVM) JavaVM {
+        return JavaVM{ ._cJavaVM = cJavaVM };
+    }
+
     pub fn destroy(self: *JavaVM) !void {
         return try checkError(self._cJavaVM.?.*.*.DestroyJavaVM.?(self._cJavaVM));
     }
@@ -195,11 +199,11 @@ pub const JavaVM = struct {
     }
 
     pub fn getEnv(self: *JavaVM, penv: *JNIEnv, version: jint) !void {
-        return try checkError(self._cJavaVM.?.*.*.GetEnv.?(self._cJavaVM, &(penv._cJNIEnv), version));
+        return try checkError(self._cJavaVM.?.*.*.GetEnv.?(self._cJavaVM, @ptrCast(penv), version));
     }
 
     pub fn attachCurrentThreadAsDaemon(self: *JavaVM, penv: *JNIEnv, args: ?*anyopaque) !void {
-        return try checkError(self._cJavaVM.?.*.*.AttachCurrentThreadAsDaemon.?(self._cJavaVM, penv._cJNIEnv, args));
+        return try checkError(self._cJavaVM.?.*.*.AttachCurrentThreadAsDaemon.?(self._cJavaVM, @ptrCast(penv), args));
     }
 };
 
