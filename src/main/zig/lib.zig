@@ -1,8 +1,6 @@
 const std = @import("std");
 
-pub const cjni = @cImport({
-    @cInclude("jni.h");
-});
+pub const cjni = @import("cjni");
 
 pub const cEnv = cjni.JNIEnv;
 

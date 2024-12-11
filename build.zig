@@ -21,7 +21,14 @@ pub fn build(b: *std.Build) void {
         .target = target,
         .optimize = optimize,
     });
-    lib.linkLibC();
+    const cjni = b.addTranslateC(.{
+        .root_source_file = b.path("src/include/jni/jni.h"),
+        .target = target,
+        .optimize = optimize,
+        .link_libc = true,
+    });
+    lib.root_module.addImport("cjni", cjni.createModule());
+
     lib.addIncludePath(.{ .src_path = .{
         .owner = b,
         .sub_path = "src/include/jni",
