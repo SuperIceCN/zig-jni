@@ -17,10 +17,7 @@ pub fn build(b: *std.Build) void {
     const lib = b.addStaticLibrary(.{
         .name = "zig-jni",
         .version = .{ .major = 0, .minor = 0, .patch = 1 },
-        .root_source_file = .{ .src_path = .{
-            .owner = b,
-            .sub_path = "src/main/zig/lib.zig",
-        } },
+        .root_source_file = b.path("src/main/zig/lib.zig"),
         .target = target,
         .optimize = optimize,
     });
