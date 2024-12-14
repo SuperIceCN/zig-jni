@@ -1,8 +1,6 @@
 const std = @import("std");
 
-pub const cjni = @cImport({
-    @cInclude("jni.h");
-});
+pub const cjni = @import("cjni");
 
 pub const cEnv = cjni.JNIEnv;
 
@@ -106,17 +104,18 @@ pub inline fn boolToJboolean(b: bool) jboolean {
 /// Exports all functions with C calling convention from the provided `func_struct` type to be
 /// accessible from Java using the JNI.
 pub fn exportJNI(comptime class_name: []const u8, comptime func_struct: type) void {
-    inline for (@typeInfo(func_struct).Struct.decls) |decl| {
+    inline for (@typeInfo(func_struct).@"struct".decls) |decl| {
         const func = comptime @field(func_struct, decl.name);
         const func_type = @TypeOf(func);
 
         // If it is not a function, skip.
-        if (!std.mem.startsWith(u8, @typeName(@TypeOf(func)), "fn")) {
+        if (@typeInfo(func_type) != .@"fn") {
             continue;
         }
 
+
         // If it is not a function with calling convention .C, skip.
-        if (@typeInfo(func_type).Fn.calling_convention != .C) {
+        if (!@typeInfo(func_type).@"fn".calling_convention.eql(.c)) {
             continue;
         }
 
@@ -127,7 +126,7 @@ pub fn exportJNI(comptime class_name: []const u8, comptime func_struct: type) vo
 
         _ = comptime std.mem.replace(u8, tmp_name, ".", "_", export_name[0..]);
 
-        @export(func, .{
+        @export(&func, .{
             .name = export_name[0..],
             .linkage = .strong,
         });
@@ -148,8 +147,8 @@ inline fn valueLen(comptime ArgsType: type) comptime_int {
     const args_type_info = @typeInfo(ArgsType);
 
     return switch (args_type_info) {
-        .Struct => args_type_info.Struct.fields.len,
-        .Void => 0,
+        .@"struct" => |s| s.fields.len,
+        .@"void" => 0,
         else => 1,
     };
 }
@@ -170,7 +169,7 @@ pub fn toJValues(args: anytype) [valueLen(@TypeOf(args))]jvalue {
     const ArgsType = @TypeOf(args);
     const args_type_info = @typeInfo(ArgsType);
 
-    if (args_type_info != .Struct) {
+    if (args_type_info != .@"struct") {
         return switch (ArgsType) {
             jboolean => [1]jvalue{.{ .z = args }},
             jbyte => [1]jvalue{.{ .b = args }},
@@ -190,7 +189,7 @@ pub fn toJValues(args: anytype) [valueLen(@TypeOf(args))]jvalue {
         };
     }
 
-    const fields = args_type_info.Struct.fields;
+    const fields = args_type_info.@"struct".fields;
     var output: [fields.len]jvalue = undefined;
 
     inline for (fields, 0..) |field, i| {
